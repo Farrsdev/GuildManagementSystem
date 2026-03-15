@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="GuildDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Hunters">
+          <Key>
+            <PropertyRef Name="HunterID" />
+          </Key>
+          <Property Name="HunterID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="text" Nullable="false" />
+          <Property Name="Rank" Type="text" />
+          <Property Name="Weapon" Type="text" />
+          <Property Name="JoinDate" Type="date" />
+        </EntityType>
+        <EntityType Name="Monsters">
+          <Key>
+            <PropertyRef Name="MonsterID" />
+          </Key>
+          <Property Name="MonsterID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="DangerLevel" Type="int" />
+          <Property Name="Habitat" Type="text" />
+          <Property Name="RewardGold" Type="int" />
+          <Property Name="DifficultyMultiplier" Type="real" />
+        </EntityType>
+        <EntityType Name="Quests">
+          <Key>
+            <PropertyRef Name="QuestID" />
+          </Key>
+          <Property Name="QuestID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HunterID" Type="int" />
+          <Property Name="MonsterID" Type="int" />
+          <Property Name="HuntDate" Type="date" />
+          <Property Name="Result" Type="text" />
+          <Property Name="RewardEarned" Type="int" />
+          <Property Name="Status" Type="varchar" MaxLength="15" />
+          <Property Name="QuestCode" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK__Quests__HunterID__3A81B327">
+          <End Role="Hunters" Type="Self.Hunters" Multiplicity="0..1" />
+          <End Role="Quests" Type="Self.Quests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hunters">
+              <PropertyRef Name="HunterID" />
+            </Principal>
+            <Dependent Role="Quests">
+              <PropertyRef Name="HunterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Quests__MonsterI__3B75D760">
+          <End Role="Monsters" Type="Self.Monsters" Multiplicity="0..1" />
+          <End Role="Quests" Type="Self.Quests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monsters">
+              <PropertyRef Name="MonsterID" />
+            </Principal>
+            <Dependent Role="Quests">
+              <PropertyRef Name="MonsterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="GuildDbModelStoreContainer">
+          <EntitySet Name="Hunters" EntityType="Self.Hunters" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Monsters" EntityType="Self.Monsters" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Quests" EntityType="Self.Quests" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Quests__HunterID__3A81B327" Association="Self.FK__Quests__HunterID__3A81B327">
+            <End Role="Hunters" EntitySet="Hunters" />
+            <End Role="Quests" EntitySet="Quests" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Quests__MonsterI__3B75D760" Association="Self.FK__Quests__MonsterI__3B75D760">
+            <End Role="Monsters" EntitySet="Monsters" />
+            <End Role="Quests" EntitySet="Quests" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="GuildDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Hunter">
+          <Key>
+            <PropertyRef Name="HunterID" />
+          </Key>
+          <Property Name="HunterID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Rank" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Weapon" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="JoinDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Quests" Relationship="Self.FK__Quests__HunterID__3A81B327" FromRole="Hunters" ToRole="Quests" />
+        </EntityType>
+        <EntityType Name="Monster">
+          <Key>
+            <PropertyRef Name="MonsterID" />
+          </Key>
+          <Property Name="MonsterID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="DangerLevel" Type="Int32" />
+          <Property Name="Habitat" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="RewardGold" Type="Int32" />
+          <NavigationProperty Name="Quests" Relationship="Self.FK__Quests__MonsterI__3B75D760" FromRole="Monsters" ToRole="Quests" />
+          <Property Name="DifficultyMultiplier" Type="Single" />
+        </EntityType>
+        <EntityType Name="Quest">
+          <Key>
+            <PropertyRef Name="QuestID" />
+          </Key>
+          <Property Name="QuestID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HunterID" Type="Int32" />
+          <Property Name="MonsterID" Type="Int32" />
+          <Property Name="HuntDate" Type="DateTime" Precision="0" />
+          <Property Name="Result" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="RewardEarned" Type="Int32" />
+          <NavigationProperty Name="Hunter" Relationship="Self.FK__Quests__HunterID__3A81B327" FromRole="Quests" ToRole="Hunters" />
+          <NavigationProperty Name="Monster" Relationship="Self.FK__Quests__MonsterI__3B75D760" FromRole="Quests" ToRole="Monsters" />
+          <Property Name="Status" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="QuestCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK__Quests__HunterID__3A81B327">
+          <End Role="Hunters" Type="Self.Hunter" Multiplicity="0..1" />
+          <End Role="Quests" Type="Self.Quest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hunters">
+              <PropertyRef Name="HunterID" />
+            </Principal>
+            <Dependent Role="Quests">
+              <PropertyRef Name="HunterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Quests__MonsterI__3B75D760">
+          <End Role="Monsters" Type="Self.Monster" Multiplicity="0..1" />
+          <End Role="Quests" Type="Self.Quest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monsters">
+              <PropertyRef Name="MonsterID" />
+            </Principal>
+            <Dependent Role="Quests">
+              <PropertyRef Name="MonsterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="GuildDbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Hunters" EntityType="Self.Hunter" />
+          <EntitySet Name="Monsters" EntityType="Self.Monster" />
+          <EntitySet Name="Quests" EntityType="Self.Quest" />
+          <AssociationSet Name="FK__Quests__HunterID__3A81B327" Association="Self.FK__Quests__HunterID__3A81B327">
+            <End Role="Hunters" EntitySet="Hunters" />
+            <End Role="Quests" EntitySet="Quests" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Quests__MonsterI__3B75D760" Association="Self.FK__Quests__MonsterI__3B75D760">
+            <End Role="Monsters" EntitySet="Monsters" />
+            <End Role="Quests" EntitySet="Quests" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="GuildDbModelStoreContainer" CdmEntityContainer="GuildDbEntities">
+          <EntitySetMapping Name="Hunters">
+            <EntityTypeMapping TypeName="GuildDbModel.Hunter">
+              <MappingFragment StoreEntitySet="Hunters">
+                <ScalarProperty Name="HunterID" ColumnName="HunterID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Rank" ColumnName="Rank" />
+                <ScalarProperty Name="Weapon" ColumnName="Weapon" />
+                <ScalarProperty Name="JoinDate" ColumnName="JoinDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Monsters">
+            <EntityTypeMapping TypeName="GuildDbModel.Monster">
+              <MappingFragment StoreEntitySet="Monsters">
+                <ScalarProperty Name="DifficultyMultiplier" ColumnName="DifficultyMultiplier" />
+                <ScalarProperty Name="MonsterID" ColumnName="MonsterID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DangerLevel" ColumnName="DangerLevel" />
+                <ScalarProperty Name="Habitat" ColumnName="Habitat" />
+                <ScalarProperty Name="RewardGold" ColumnName="RewardGold" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Quests">
+            <EntityTypeMapping TypeName="GuildDbModel.Quest">
+              <MappingFragment StoreEntitySet="Quests">
+                <ScalarProperty Name="QuestCode" ColumnName="QuestCode" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="QuestID" ColumnName="QuestID" />
+                <ScalarProperty Name="HunterID" ColumnName="HunterID" />
+                <ScalarProperty Name="MonsterID" ColumnName="MonsterID" />
+                <ScalarProperty Name="HuntDate" ColumnName="HuntDate" />
+                <ScalarProperty Name="Result" ColumnName="Result" />
+                <ScalarProperty Name="RewardEarned" ColumnName="RewardEarned" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

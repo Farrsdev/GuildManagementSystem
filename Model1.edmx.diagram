@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ffdf856c246e4057a188d2457544b03d" Name="Diagram1">
+        <EntityTypeShape EntityType="GuildDbModel.Hunter" Width="1.5" PointX="0.75" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="GuildDbModel.Monster" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="GuildDbModel.Quest" Width="1.5" PointX="3.625" PointY="0.5" IsExpanded="true" />
+        <AssociationConnector Association="GuildDbModel.FK__Quests__HunterID__3A81B327" ManuallyRouted="false" />
+        <AssociationConnector Association="GuildDbModel.FK__Quests__MonsterI__3B75D760" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
