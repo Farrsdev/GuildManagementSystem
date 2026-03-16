@@ -11,9 +11,10 @@ using System.Xml.Linq;
 
 namespace Mdilearn
 {
-    public partial class FormDashboard : Form
+    public partial class FormDashboard : Form, IUpdatable
     {
         GuildDbEntities db = new GuildDbEntities();
+        public void RefreshData() => LoadStats();
         public FormDashboard()
         {
             InitializeComponent();

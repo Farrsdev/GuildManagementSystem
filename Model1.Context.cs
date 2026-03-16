@@ -28,5 +28,8 @@ namespace Mdilearn
         public DbSet<Hunter> Hunters { get; set; }
         public DbSet<Monster> Monsters { get; set; }
         public DbSet<Quest> Quests { get; set; }
+        public DbSet<PartyMember> PartyMembers { get; set; }
+        public DbSet<PartyQuest> PartyQuests { get; set; }
+        public DbSet<TreasuryTransaction> TreasuryTransactions { get; set; }
     }
 }

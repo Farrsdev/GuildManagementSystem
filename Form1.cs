@@ -67,24 +67,9 @@ namespace Mdilearn
 
         private void QuestForm_QuestAdded()
         {
-            var hunterForm = this.MdiChildren.OfType<FormHunter>().FirstOrDefault();
-            var dashboardForm = this.MdiChildren.OfType<FormDashboard>().FirstOrDefault();
-            var leaderboardForm = this.MdiChildren.OfType<FormLeaderboard>().FirstOrDefault();
-
-            if(hunterForm != null)
+            foreach(var form in this.MdiChildren.OfType<IUpdatable>())
             {
-                hunterForm.LoadDgv();
-            }
-
-            if(dashboardForm != null)
-            {
-                dashboardForm.LoadStats();
-            }
-
-            if(leaderboardForm != null)
-            {
-                leaderboardForm.LoadLeaderboard();
-
+                form.RefreshData();
             }
         }
 
@@ -129,6 +114,28 @@ namespace Mdilearn
         private void questHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenForm<FormQuestHistory>();
+        }
+
+        private void treasuryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenForm<FormTreasury>();
+        }
+
+        private void partyQuestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var partyQuestForm = this.MdiChildren.OfType<FormQuestPary>().FirstOrDefault();
+
+            if(partyQuestForm != null)
+            {
+                partyQuestForm.Activate();
+            }
+            else
+            {
+                partyQuestForm = new FormQuestPary();
+                partyQuestForm.MdiParent = this;
+                partyQuestForm.PartyQuestAdded += QuestForm_QuestAdded;
+                partyQuestForm.Show();
+            }
         }
     }
 }

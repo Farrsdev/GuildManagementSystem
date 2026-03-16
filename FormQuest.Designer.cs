@@ -60,9 +60,8 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(243, 38);
+            this.label1.Size = new System.Drawing.Size(0, 38);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Manage Quest";
             // 
             // groupBox2
             // 
@@ -259,11 +258,11 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(10, 11);
+            this.label6.Location = new System.Drawing.Point(12, 9);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(405, 38);
+            this.label6.Size = new System.Drawing.Size(189, 38);
             this.label6.TabIndex = 8;
-            this.label6.Text = "Transaksi Quest Berburu";
+            this.label6.Text = "Quest Solo";
             // 
             // groupBox1
             // 

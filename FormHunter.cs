@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Mdilearn
 {
-    public partial class FormHunter : Form
+    public partial class FormHunter : Form, IUpdatable
     {
         Helper h = new Helper();
         GuildDbEntities db = new GuildDbEntities();
@@ -57,6 +57,7 @@ namespace Mdilearn
                 if (_hunterId == 0) rank = "C";
             }
         }
+        public void RefreshData() => LoadDgv();
         public FormHunter()
         {
             InitializeComponent();
@@ -79,14 +80,21 @@ namespace Mdilearn
         {
             using(var db = new GuildDbEntities())
             {
-                var dt = db.Hunters.ToList();
+                var dt = db.Hunters.Select(x => new
+                {
+                    x.HunterID,
+                    x.Name,
+                    x.Rank,
+                    x.Weapon,
+                    x.JoinDate
+                }).ToList();
 
                 dataGridView1.DataSource = dt;
                 dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                 dataGridView1.ReadOnly = true;
 
                 dataGridView1.Columns["HunterID"].Visible = false;
-                dataGridView1.Columns["Quests"].Visible = false;
+                //dataGridView1.Columns["Quests"].Visible = false;
                 h.AddEditDeleteBtnDgv(dataGridView1);
             }
         }

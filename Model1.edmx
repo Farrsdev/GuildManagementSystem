@@ -26,6 +26,26 @@
           <Property Name="RewardGold" Type="int" />
           <Property Name="DifficultyMultiplier" Type="real" />
         </EntityType>
+        <EntityType Name="PartyMembers">
+          <Key>
+            <PropertyRef Name="PartyMemberID" />
+          </Key>
+          <Property Name="PartyMemberID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PartyQuestID" Type="int" />
+          <Property Name="HunterID" Type="int" />
+          <Property Name="RewardEarned" Type="int" />
+        </EntityType>
+        <EntityType Name="PartyQuests">
+          <Key>
+            <PropertyRef Name="PartyQuestID" />
+          </Key>
+          <Property Name="PartyQuestID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="QuestCode" Type="varchar" MaxLength="50" />
+          <Property Name="MonsterID" Type="int" />
+          <Property Name="HuntDate" Type="datetime" />
+          <Property Name="Status" Type="varchar" MaxLength="20" />
+          <Property Name="TotalReward" Type="int" />
+        </EntityType>
         <EntityType Name="Quests">
           <Key>
             <PropertyRef Name="QuestID" />
@@ -38,6 +58,16 @@
           <Property Name="RewardEarned" Type="int" />
           <Property Name="Status" Type="varchar" MaxLength="15" />
           <Property Name="QuestCode" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="TreasuryTransactions">
+          <Key>
+            <PropertyRef Name="TransactionID" />
+          </Key>
+          <Property Name="TransactionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PartyQuestID" Type="int" />
+          <Property Name="TaxAmount" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="QuestID" Type="int" />
         </EntityType>
         <Association Name="FK__Quests__HunterID__3A81B327">
           <End Role="Hunters" Type="Self.Hunters" Multiplicity="0..1" />
@@ -63,10 +93,73 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PartyMembers_PartyQuest">
+          <End Role="PartyQuests" Type="Self.PartyQuests" Multiplicity="0..1" />
+          <End Role="PartyMembers" Type="Self.PartyMembers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PartyQuests">
+              <PropertyRef Name="PartyQuestID" />
+            </Principal>
+            <Dependent Role="PartyMembers">
+              <PropertyRef Name="PartyQuestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PartyQuest_Monster">
+          <End Role="Monsters" Type="Self.Monsters" Multiplicity="0..1" />
+          <End Role="PartyQuests" Type="Self.PartyQuests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monsters">
+              <PropertyRef Name="MonsterID" />
+            </Principal>
+            <Dependent Role="PartyQuests">
+              <PropertyRef Name="MonsterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PM_Hunter">
+          <End Role="Hunters" Type="Self.Hunters" Multiplicity="0..1" />
+          <End Role="PartyMembers" Type="Self.PartyMembers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hunters">
+              <PropertyRef Name="HunterID" />
+            </Principal>
+            <Dependent Role="PartyMembers">
+              <PropertyRef Name="HunterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Treasury_PartyQuest">
+          <End Role="PartyQuests" Type="Self.PartyQuests" Multiplicity="0..1" />
+          <End Role="TreasuryTransactions" Type="Self.TreasuryTransactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PartyQuests">
+              <PropertyRef Name="PartyQuestID" />
+            </Principal>
+            <Dependent Role="TreasuryTransactions">
+              <PropertyRef Name="PartyQuestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Treasury_Quest">
+          <End Role="Quests" Type="Self.Quests" Multiplicity="0..1" />
+          <End Role="TreasuryTransactions" Type="Self.TreasuryTransactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Quests">
+              <PropertyRef Name="QuestID" />
+            </Principal>
+            <Dependent Role="TreasuryTransactions">
+              <PropertyRef Name="QuestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="GuildDbModelStoreContainer">
           <EntitySet Name="Hunters" EntityType="Self.Hunters" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Monsters" EntityType="Self.Monsters" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PartyMembers" EntityType="Self.PartyMembers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PartyQuests" EntityType="Self.PartyQuests" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Quests" EntityType="Self.Quests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TreasuryTransactions" EntityType="Self.TreasuryTransactions" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Quests__HunterID__3A81B327" Association="Self.FK__Quests__HunterID__3A81B327">
             <End Role="Hunters" EntitySet="Hunters" />
             <End Role="Quests" EntitySet="Quests" />
@@ -74,6 +167,26 @@
           <AssociationSet Name="FK__Quests__MonsterI__3B75D760" Association="Self.FK__Quests__MonsterI__3B75D760">
             <End Role="Monsters" EntitySet="Monsters" />
             <End Role="Quests" EntitySet="Quests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PartyMembers_PartyQuest" Association="Self.FK_PartyMembers_PartyQuest">
+            <End Role="PartyQuests" EntitySet="PartyQuests" />
+            <End Role="PartyMembers" EntitySet="PartyMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PartyQuest_Monster" Association="Self.FK_PartyQuest_Monster">
+            <End Role="Monsters" EntitySet="Monsters" />
+            <End Role="PartyQuests" EntitySet="PartyQuests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PM_Hunter" Association="Self.FK_PM_Hunter">
+            <End Role="Hunters" EntitySet="Hunters" />
+            <End Role="PartyMembers" EntitySet="PartyMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Treasury_PartyQuest" Association="Self.FK_Treasury_PartyQuest">
+            <End Role="PartyQuests" EntitySet="PartyQuests" />
+            <End Role="TreasuryTransactions" EntitySet="TreasuryTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Treasury_Quest" Association="Self.FK_Treasury_Quest">
+            <End Role="Quests" EntitySet="Quests" />
+            <End Role="TreasuryTransactions" EntitySet="TreasuryTransactions" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -90,6 +203,7 @@
           <Property Name="Weapon" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="JoinDate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Quests" Relationship="Self.FK__Quests__HunterID__3A81B327" FromRole="Hunters" ToRole="Quests" />
+          <NavigationProperty Name="PartyMembers" Relationship="GuildDbModel.FK_PM_Hunter" FromRole="Hunter" ToRole="PartyMember" />
         </EntityType>
         <EntityType Name="Monster">
           <Key>
@@ -102,6 +216,7 @@
           <Property Name="RewardGold" Type="Int32" />
           <NavigationProperty Name="Quests" Relationship="Self.FK__Quests__MonsterI__3B75D760" FromRole="Monsters" ToRole="Quests" />
           <Property Name="DifficultyMultiplier" Type="Single" />
+          <NavigationProperty Name="PartyQuests" Relationship="GuildDbModel.FK_PartyQuest_Monster" FromRole="Monster" ToRole="PartyQuest" />
         </EntityType>
         <EntityType Name="Quest">
           <Key>
@@ -117,6 +232,7 @@
           <NavigationProperty Name="Monster" Relationship="Self.FK__Quests__MonsterI__3B75D760" FromRole="Quests" ToRole="Monsters" />
           <Property Name="Status" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="QuestCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="TreasuryTransactions" Relationship="GuildDbModel.FK_Treasury_Quest" FromRole="Quest" ToRole="TreasuryTransaction" />
         </EntityType>
         <Association Name="FK__Quests__HunterID__3A81B327">
           <End Role="Hunters" Type="Self.Hunter" Multiplicity="0..1" />
@@ -154,7 +270,127 @@
             <End Role="Monsters" EntitySet="Monsters" />
             <End Role="Quests" EntitySet="Quests" />
           </AssociationSet>
+          <EntitySet Name="PartyMembers" EntityType="GuildDbModel.PartyMember" />
+          <EntitySet Name="PartyQuests" EntityType="GuildDbModel.PartyQuest" />
+          <AssociationSet Name="FK_PM_Hunter" Association="GuildDbModel.FK_PM_Hunter">
+            <End Role="Hunter" EntitySet="Hunters" />
+            <End Role="PartyMember" EntitySet="PartyMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PartyQuest_Monster" Association="GuildDbModel.FK_PartyQuest_Monster">
+            <End Role="Monster" EntitySet="Monsters" />
+            <End Role="PartyQuest" EntitySet="PartyQuests" />
+          </AssociationSet>
+          <EntitySet Name="TreasuryTransactions" EntityType="GuildDbModel.TreasuryTransaction" />
+          <AssociationSet Name="FK_Treasury_PartyQuest" Association="GuildDbModel.FK_Treasury_PartyQuest">
+            <End Role="PartyQuest" EntitySet="PartyQuests" />
+            <End Role="TreasuryTransaction" EntitySet="TreasuryTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Treasury_Quest" Association="GuildDbModel.FK_Treasury_Quest">
+            <End Role="Quest" EntitySet="Quests" />
+            <End Role="TreasuryTransaction" EntitySet="TreasuryTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PartyMembers_PartyQuest" Association="GuildDbModel.FK_PartyMembers_PartyQuest">
+            <End Role="PartyQuest" EntitySet="PartyQuests" />
+            <End Role="PartyMember" EntitySet="PartyMembers" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="PartyMember">
+          <Key>
+            <PropertyRef Name="PartyMemberID" />
+          </Key>
+          <Property Name="PartyMemberID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PartyQuestID" Type="Int32" />
+          <Property Name="HunterID" Type="Int32" />
+          <NavigationProperty Name="Hunter" Relationship="GuildDbModel.FK_PM_Hunter" FromRole="PartyMember" ToRole="Hunter" />
+          <Property Name="RewardEarned" Type="Int32" />
+          <NavigationProperty Name="PartyQuest" Relationship="GuildDbModel.FK_PartyMembers_PartyQuest" FromRole="PartyMember" ToRole="PartyQuest" />
+        </EntityType>
+        <EntityType Name="PartyQuest">
+          <Key>
+            <PropertyRef Name="PartyQuestID" />
+          </Key>
+          <Property Name="PartyQuestID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="QuestCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MonsterID" Type="Int32" />
+          <Property Name="HuntDate" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="TotalReward" Type="Int32" />
+          <NavigationProperty Name="Monster" Relationship="GuildDbModel.FK_PartyQuest_Monster" FromRole="PartyQuest" ToRole="Monster" />
+          <NavigationProperty Name="TreasuryTransactions" Relationship="GuildDbModel.FK_Treasury_PartyQuest" FromRole="PartyQuest" ToRole="TreasuryTransaction" />
+          <NavigationProperty Name="PartyMembers" Relationship="GuildDbModel.FK_PartyMembers_PartyQuest" FromRole="PartyQuest" ToRole="PartyMember" />
+        </EntityType>
+        <Association Name="FK_PM_Hunter">
+          <End Type="GuildDbModel.Hunter" Role="Hunter" Multiplicity="0..1" />
+          <End Type="GuildDbModel.PartyMember" Role="PartyMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hunter">
+              <PropertyRef Name="HunterID" />
+            </Principal>
+            <Dependent Role="PartyMember">
+              <PropertyRef Name="HunterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PartyQuest_Monster">
+          <End Type="GuildDbModel.Monster" Role="Monster" Multiplicity="0..1" />
+          <End Type="GuildDbModel.PartyQuest" Role="PartyQuest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monster">
+              <PropertyRef Name="MonsterID" />
+            </Principal>
+            <Dependent Role="PartyQuest">
+              <PropertyRef Name="MonsterID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="TreasuryTransaction">
+          <Key>
+            <PropertyRef Name="TransactionID" />
+          </Key>
+          <Property Name="TransactionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PartyQuestID" Type="Int32" />
+          <Property Name="TaxAmount" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="PartyQuest" Relationship="GuildDbModel.FK_Treasury_PartyQuest" FromRole="TreasuryTransaction" ToRole="PartyQuest" />
+          <Property Name="QuestID" Type="Int32" />
+          <NavigationProperty Name="Quest" Relationship="GuildDbModel.FK_Treasury_Quest" FromRole="TreasuryTransaction" ToRole="Quest" />
+        </EntityType>
+        <Association Name="FK_Treasury_PartyQuest">
+          <End Type="GuildDbModel.PartyQuest" Role="PartyQuest" Multiplicity="0..1" />
+          <End Type="GuildDbModel.TreasuryTransaction" Role="TreasuryTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PartyQuest">
+              <PropertyRef Name="PartyQuestID" />
+            </Principal>
+            <Dependent Role="TreasuryTransaction">
+              <PropertyRef Name="PartyQuestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Treasury_Quest">
+          <End Type="GuildDbModel.Quest" Role="Quest" Multiplicity="0..1" />
+          <End Type="GuildDbModel.TreasuryTransaction" Role="TreasuryTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Quest">
+              <PropertyRef Name="QuestID" />
+            </Principal>
+            <Dependent Role="TreasuryTransaction">
+              <PropertyRef Name="QuestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PartyMembers_PartyQuest">
+          <End Type="GuildDbModel.PartyQuest" Role="PartyQuest" Multiplicity="0..1" />
+          <End Type="GuildDbModel.PartyMember" Role="PartyMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PartyQuest">
+              <PropertyRef Name="PartyQuestID" />
+            </Principal>
+            <Dependent Role="PartyMember">
+              <PropertyRef Name="PartyQuestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -195,6 +431,39 @@
                 <ScalarProperty Name="HuntDate" ColumnName="HuntDate" />
                 <ScalarProperty Name="Result" ColumnName="Result" />
                 <ScalarProperty Name="RewardEarned" ColumnName="RewardEarned" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PartyMembers">
+            <EntityTypeMapping TypeName="GuildDbModel.PartyMember">
+              <MappingFragment StoreEntitySet="PartyMembers">
+                <ScalarProperty Name="RewardEarned" ColumnName="RewardEarned" />
+                <ScalarProperty Name="HunterID" ColumnName="HunterID" />
+                <ScalarProperty Name="PartyQuestID" ColumnName="PartyQuestID" />
+                <ScalarProperty Name="PartyMemberID" ColumnName="PartyMemberID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PartyQuests">
+            <EntityTypeMapping TypeName="GuildDbModel.PartyQuest">
+              <MappingFragment StoreEntitySet="PartyQuests">
+                <ScalarProperty Name="TotalReward" ColumnName="TotalReward" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="HuntDate" ColumnName="HuntDate" />
+                <ScalarProperty Name="MonsterID" ColumnName="MonsterID" />
+                <ScalarProperty Name="QuestCode" ColumnName="QuestCode" />
+                <ScalarProperty Name="PartyQuestID" ColumnName="PartyQuestID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TreasuryTransactions">
+            <EntityTypeMapping TypeName="GuildDbModel.TreasuryTransaction">
+              <MappingFragment StoreEntitySet="TreasuryTransactions">
+                <ScalarProperty Name="QuestID" ColumnName="QuestID" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
+                <ScalarProperty Name="PartyQuestID" ColumnName="PartyQuestID" />
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

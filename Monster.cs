@@ -17,6 +17,7 @@ namespace Mdilearn
         public Monster()
         {
             this.Quests = new HashSet<Quest>();
+            this.PartyQuests = new HashSet<PartyQuest>();
         }
     
         public int MonsterID { get; set; }
@@ -27,5 +28,6 @@ namespace Mdilearn
         public Nullable<float> DifficultyMultiplier { get; set; }
     
         public virtual ICollection<Quest> Quests { get; set; }
+        public virtual ICollection<PartyQuest> PartyQuests { get; set; }
     }
 }

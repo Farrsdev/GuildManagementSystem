@@ -12,21 +12,23 @@ namespace Mdilearn
     using System;
     using System.Collections.Generic;
     
-    public partial class Hunter
+    public partial class PartyQuest
     {
-        public Hunter()
+        public PartyQuest()
         {
-            this.Quests = new HashSet<Quest>();
+            this.TreasuryTransactions = new HashSet<TreasuryTransaction>();
             this.PartyMembers = new HashSet<PartyMember>();
         }
     
-        public int HunterID { get; set; }
-        public string Name { get; set; }
-        public string Rank { get; set; }
-        public string Weapon { get; set; }
-        public Nullable<System.DateTime> JoinDate { get; set; }
+        public int PartyQuestID { get; set; }
+        public string QuestCode { get; set; }
+        public Nullable<int> MonsterID { get; set; }
+        public Nullable<System.DateTime> HuntDate { get; set; }
+        public string Status { get; set; }
+        public Nullable<int> TotalReward { get; set; }
     
-        public virtual ICollection<Quest> Quests { get; set; }
+        public virtual Monster Monster { get; set; }
+        public virtual ICollection<TreasuryTransaction> TreasuryTransactions { get; set; }
         public virtual ICollection<PartyMember> PartyMembers { get; set; }
     }
 }

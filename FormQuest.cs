@@ -19,6 +19,7 @@ namespace Mdilearn
         int monsterId = 0;
         int hunterId = 0;
         int reward = 0;
+        const double guildTax = 0.2;
         public FormQuest()
         {
             InitializeComponent();
@@ -79,22 +80,18 @@ namespace Mdilearn
             {
                 monsterId = (int)cmbxMonster.SelectedValue;
 
-                var monster = db.Monsters.Find(monsterId);
+                reward = help.LoadReward(monsterId, db, cmbxStatus.Text);
 
-                if(monster != null)
-                {
-                    reward = (int)(monster.RewardGold * monster.DifficultyMultiplier);
-
-                    if (cmbxStatus.Text.ToLower() == "failed")
-                    {
-                        reward = 0;
-                    }
-                    txtReward.Text = reward.ToString();
-                }
+                txtReward.Text = reward.ToString();
             }
 
         }
         private void button2_Click(object sender, EventArgs e)
+        {
+            AddQuest();   
+        }
+
+        void AddQuest()
         {
             if (hunterId == 0 || monsterId == 0)
             {
@@ -102,7 +99,10 @@ namespace Mdilearn
                 return;
             }
             if (txtRes.Text == "") return;
-            
+
+            int taxAmount = Convert.ToInt32(reward * guildTax);
+            reward -= taxAmount;
+
             Quest q = new Quest
             {
                 HunterID = hunterId,
@@ -117,17 +117,26 @@ namespace Mdilearn
             db.Quests.Add(q);
             db.SaveChanges();
 
+
+            var t = new TreasuryTransaction
+            {
+                PartyQuestID = null,
+                QuestID = q.QuestID,
+                TaxAmount = taxAmount,
+                CreatedDate = DateTime.Now,
+            };
+            db.TreasuryTransactions.Add(t);
+
             var hunter = db.Hunters.Find(hunterId);
 
-            if(hunter != null)
+            if (hunter != null)
             {
-                int _totalReward = db.Quests.Where(x => x.HunterID == hunterId).Sum(x => x.RewardEarned) ?? 0;
-                
-                hunter.Rank = _totalReward > 150000 ? "SSS" : _totalReward > 50000 ? "SS" : _totalReward > 20000 ? "S"
-                    : _totalReward >= 10000 && _totalReward <= 20000 ? "A"
-                    : _totalReward >= 5000 && _totalReward < 10000 ? "B"
-                    : "C";
+                int totalSolo = hunter.Quests.Sum(x => x.RewardEarned) ?? 0;
+                int totalParty = hunter.PartyMembers.Sum(x => x.RewardEarned) ?? 0;
 
+                int _totalReward = totalSolo + totalParty;
+                hunter.Rank = help.CalculateRank(_totalReward);
+                hunter.Rank = help.CalculateRank(_totalReward);
             }
             db.SaveChanges();
 
@@ -137,7 +146,6 @@ namespace Mdilearn
             LoadDgv();
             help.ClearForm(groupBox2);
         }
-
         private void cmbxHunter_SelectedIndexChanged(object sender, EventArgs e)
         {
             if(cmbxHunter.SelectedValue != null)
@@ -179,7 +187,7 @@ namespace Mdilearn
                     MessageBoxIcon.Warning
                 );
             }
-        }
+        }   
 
 
         private void label7_Click(object sender, EventArgs e)

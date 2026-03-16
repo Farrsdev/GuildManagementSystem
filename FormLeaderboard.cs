@@ -10,8 +10,9 @@ using System.Windows.Forms;
 
 namespace Mdilearn
 {
-    public partial class FormLeaderboard : Form
+    public partial class FormLeaderboard : Form, IUpdatable
     {
+       public void RefreshData() => LoadLeaderboard();
        public FormLeaderboard()
        {
             InitializeComponent();
@@ -21,7 +22,7 @@ namespace Mdilearn
         {
             label2.Text = DateTime.Now.ToString("dd-MMMM-yyyy HH:mm:ss");
         }
-
+        
         private void FormLeaderboard_Load(object sender, EventArgs e)
         {
             timer1.Start();
@@ -36,8 +37,8 @@ namespace Mdilearn
                 {
                     x.Name,
                     x.Rank,
-                    Hunts = x.Quests.Count(),
-                    Gold = x.Quests.Sum(y => y.RewardEarned)
+                    Hunts = x.Quests.Count() + x.PartyMembers.Count(),
+                    Gold = x.Quests.Sum(y => y.RewardEarned) + x.PartyMembers.Sum(z => z.RewardEarned)
                 }).OrderByDescending(x => x.Gold)
                 .Select((d, index) => new
                 {
